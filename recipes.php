@@ -12,7 +12,7 @@ $error = '';
 try {
     $conn = new mysqli($host, $user, $pass, $db);
     $conn->set_charset('utf8mb4');
-    $result = $conn->query('SELECT id, name, description, ingredients, instructions, prep_minutes FROM recipes ORDER BY name');
+    $result = $conn->query('SELECT id, title, subtitle, category, servings, description, ingredient_count, step_count FROM recipes ORDER BY title');
     $recipes = $result->fetch_all(MYSQLI_ASSOC);
     $conn->close();
 } catch (mysqli_sql_exception $e) {
@@ -37,10 +37,17 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
     <?php else: ?>
         <?php foreach ($recipes as $r): ?>
             <article>
-                <h2><?php echo e($r['name']); ?> (<?php echo (int) $r['prep_minutes']; ?> min)</h2>
+                <h2><?php echo e($r['title']); ?></h2>
+                <?php if ($r['subtitle'] !== ''): ?>
+                    <p><?php echo e($r['subtitle']); ?></p>
+                <?php endif; ?>
+                <?php if ($r['category'] !== ''): ?>
+                    <p><strong>Category:</strong> <?php echo e($r['category']); ?></p>
+                <?php endif; ?>
+                <p><strong>Servings:</strong> <?php echo (int) $r['servings']; ?></p>
                 <p><?php echo e($r['description']); ?></p>
-                <p><strong>Ingredients:</strong> <?php echo e($r['ingredients']); ?></p>
-                <p><strong>Instructions:</strong> <?php echo e($r['instructions']); ?></p>
+                <p><strong>Ingredient count:</strong> <?php echo (int) $r['ingredient_count']; ?></p>
+                <p><strong>Step count:</strong> <?php echo (int) $r['step_count']; ?></p>
             </article>
         <?php endforeach; ?>
     <?php endif; ?>

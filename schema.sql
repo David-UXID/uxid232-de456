@@ -4,16 +4,16 @@ USE recipe_db;
 DROP TABLE IF EXISTS recipes;
 CREATE TABLE recipes (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    subtitle VARCHAR(255) NOT NULL DEFAULT '',
+    category VARCHAR(100) NOT NULL DEFAULT '',
+    servings SMALLINT UNSIGNED NOT NULL DEFAULT 0,
     description VARCHAR(255) NOT NULL DEFAULT '',
-    ingredients TEXT NOT NULL,
-    instructions TEXT NOT NULL,
-    prep_minutes SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    ingredient_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    step_count SMALLINT UNSIGNED NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO recipes (name, description, ingredients, instructions, prep_minutes) VALUES
-('Spaghetti Aglio e Olio', 'Simple garlic and olive oil pasta.', 'Spaghetti, garlic, olive oil, chili flakes, parsley', 'Boil pasta. Saute garlic in oil with chili. Toss with pasta and parsley.', 20),
-('Pancakes', 'Fluffy breakfast pancakes.', 'Flour, milk, eggs, sugar, baking powder, butter', 'Mix batter. Cook on a buttered griddle until golden on both sides.', 25),
-('Guacamole', 'Fresh avocado dip.', 'Avocados, lime, onion, cilantro, salt', 'Mash avocados and stir in remaining ingredients.', 10),
-('Chicken Stir Fry', 'Quick weeknight dinner.', 'Chicken, broccoli, soy sauce, garlic, ginger, rice', 'Stir fry chicken and vegetables, add sauce, serve over rice.', 30);
+INSERT INTO recipes (title, subtitle, category, servings, description, ingredient_count, step_count) VALUES
+('Ancho-Orange Chicken', 'with Kale Rice & Roasted Carrots', 'Chicken', 4, 'We''re amping up chicken breasts with a glaze of smoky ancho chile paste and fresh orange juice in this recipe. On the side, roasted carrots and lightly creamy, golden raisin-studded rice perfectly accent the sweetness of the glaze.', 11, 6),
+('Beef Medallions & Mushroom Sauce', 'with Mashed Potatoes', 'Beef', 2, 'In this easy recipe, inspired by steak Diane (an American restaurant classic), we''re searing beef medallions, then using the fond in the pan to make a rich, bright mushroom sauce for spooning on top. Garlic mashed potatoes and sautéed kale make for delicious, simple sides.', 9, 6);
