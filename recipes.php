@@ -1,11 +1,11 @@
 ﻿<?php
-// Connect to the MySQL database created by schema.sql. Update these values if your MAMP settings differ.
+// Connect to the MySQL database created by schema.sql. MAMP default settings.
 $host = 'localhost';
 $user = 'root';
 $pass = 'root';
 $db   = 'recipe_db';
 
-// Ask MySQLi to report database problems as exceptions so they can be handled below.
+// Ask MySQLi to report database problems as exceptions so they can be handled below. (Ai gave this to me)
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 // Start with an empty recipe list and no error message in case the page cannot load data.
@@ -33,7 +33,7 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
     <!-- Set up character encoding, mobile-friendly sizing, and the browser tab title. -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>All Recipes</title>
+    <title>My Cookbook</title>
 </head>
 <body>
     <!-- Show a database error, an empty-list message, or the recipes that were loaded. -->
