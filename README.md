@@ -2,3 +2,4 @@
 This is the main Repository for IDM232 Final project 
 ## AI use Section 
 Used chatgpt to help with user form  asked for best approach 
+Used gemeni to help fix some code problems 

@@ -16,7 +16,7 @@ $error = '';
 try {
     $conn = new mysqli($host, $user, $pass, $db);
     $conn->set_charset('utf8mb4');
-    $result = $conn->query('SELECT id, title, subtitle, category, servings, description, ingredient_count, step_count FROM recipes ORDER BY title');
+    $result = $conn->query('SELECT recipes.id, recipes.title, recipes.subtitle, COALESCE(categories.name, \'\') AS category, recipes.servings, recipes.description, recipes.ingredient_count, recipes.step_count FROM recipes LEFT JOIN categories ON categories.id = recipes.category_id ORDER BY recipes.title');
     $recipes = $result->fetch_all(MYSQLI_ASSOC);
     $conn->close();
 } catch (mysqli_sql_exception $e) {
