@@ -1,0 +1,228 @@
+:root {
+    color-scheme: light;
+    --blue: #1769aa;
+    --blue-dark: #104d7c;
+    --green: #15966b;
+    --green-light: #e5f6ee;
+    --ink: #193247;
+    --muted: #607789;
+    --paper: #f3f8fb;
+    --white: #fff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.cookbook {
+    width: min(100% - 2rem, 1080px);
+    margin: 0 auto;
+    padding: 3rem 0 4rem;
+}
+
+.hero {
+    padding: clamp(2rem, 6vw, 4.5rem);
+    border-radius: 1.5rem;
+    background: linear-gradient(125deg, #1769aa, #15966b);
+    color: var(--white);
+    box-shadow: 0 18px 45px rgb(23 105 170 / 18%);
+}
+
+.eyebrow {
+    margin: 0 0 0.4rem;
+    color: #d3f7e7;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 7vw, 4.5rem);
+    letter-spacing: -0.05em;
+    line-height: 1.1;
+}
+
+.intro {
+    max-width: 38rem;
+    margin: 1rem 0 1.75rem;
+    color: #effff7;
+    font-size: 1.1rem;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    max-width: 670px;
+}
+
+.search input {
+    flex: 1;
+    min-width: 0;
+    min-height: 3.25rem;
+    padding: 0.8rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 0.7rem;
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+}
+
+.search input:focus {
+    border-color: #b7f2d5;
+    outline: 3px solid rgb(255 255 255 / 35%);
+}
+
+.search button {
+    min-height: 3.25rem;
+    padding: 0.75rem 1.1rem;
+    border: 0;
+    border-radius: 0.7rem;
+    background: #103f68;
+    color: var(--white);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    transition: background 150ms ease, transform 150ms ease;
+}
+
+.search button:hover {
+    background: #0c3151;
+    transform: translateY(-1px);
+}
+
+.clear-search {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.results {
+    padding-top: 2rem;
+}
+
+.results-heading {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+}
+
+.empty-state,
+.notice {
+    margin: 0;
+    padding: 1.2rem 1.4rem;
+    border-radius: 0.8rem;
+    background: var(--white);
+    color: var(--muted);
+}
+
+.notice {
+    border-left: 4px solid var(--green);
+    color: var(--ink);
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+}
+
+.recipe-card {
+    padding: 1.4rem;
+    border: 1px solid #e1ebf0;
+    border-radius: 1rem;
+    background: var(--white);
+    box-shadow: 0 8px 24px rgb(25 50 71 / 5%);
+}
+
+.category {
+    display: inline-block;
+    margin: 0 0 0.6rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 99px;
+    background: var(--green-light);
+    color: #08734d;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.recipe-card h3 {
+    margin: 0;
+    color: var(--blue-dark);
+    font-size: 1.35rem;
+    line-height: 1.3;
+}
+
+.subtitle {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.description {
+    margin: 1rem 0;
+}
+
+.recipe-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 0;
+    padding: 0.85rem 0 0;
+    border-top: 1px solid #e7eef2;
+    color: var(--muted);
+    font-size: 0.9rem;
+    list-style: none;
+}
+
+.recipe-details strong {
+    color: var(--green);
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+@media (max-width: 540px) {
+    .cookbook {
+        width: min(100% - 1.25rem, 1080px);
+        padding-top: 0.625rem;
+    }
+
+    .hero {
+        padding: 2rem 1.25rem;
+        border-radius: 1rem;
+    }
+
+    .search {
+        align-items: stretch;
+        flex-wrap: wrap;
+    }
+
+    .search input {
+        flex-basis: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
+}
