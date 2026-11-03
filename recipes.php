@@ -60,7 +60,7 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
     <main class="cookbook">
         <header class="hero">
             <p class="eyebrow">A little inspiration for your table</p>
-            <h1>G's Cookbook</h1>
+            <h1>David's Cookbook</h1>
             <p class="intro">Find something delicious to make. Search recipes by name, ingredient, or category.</p>
             <form class="search" method="get" action="recipes.php" role="search">
                 <label class="sr-only" for="recipe-search">Search recipes</label>
