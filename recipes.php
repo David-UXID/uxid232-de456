@@ -11,11 +11,11 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 // Start with an empty recipe list and no error message in case the page cannot load data.
 $recipes = [];
 $error = '';
-$q = trim((string) ($_GET['q'] ?? ''));
+$search = trim((string) ($_GET['searchbox'] ?? ''));
 
 // Load the recipes in alphabetical order and prepare the connection for common international characters.
 // Recipes stay hidden until the user submits a search.
-$searched = $q !== '';
+$searched = $search !== '';
 try {
     if (!$searched) {
         throw new RuntimeException('skip');
@@ -24,13 +24,13 @@ try {
     $conn->set_charset('utf8mb4');
     // Use a prepared statement so the search text is never inserted into the SQL directly.
     $sql = 'SELECT recipes.id, recipes.title, recipes.subtitle, COALESCE(categories.name, \'\') AS category, recipes.servings, recipes.description, recipes.ingredient_count, recipes.step_count FROM recipes LEFT JOIN categories ON categories.id = recipes.category_id';
-    if ($q !== '') {
+    if ($search !== '') {
         $sql .= ' WHERE recipes.title LIKE ? OR recipes.subtitle LIKE ? OR recipes.description LIKE ? OR categories.name LIKE ?';
     }
     $sql .= ' ORDER BY recipes.title';
     $stmt = $conn->prepare($sql);
-    if ($q !== '') {
-        $like = '%' . addcslashes($q, '%_\\') . '%';
+    if ($search !== '') {
+        $like = '%' . addcslashes($search, '%_\\') . '%';
         $stmt->bind_param('ssss', $like, $like, $like, $like);
     }
     $stmt->execute();
@@ -60,13 +60,13 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
     <main class="cookbook">
         <header class="hero">
             <p class="eyebrow">A little inspiration for your table</p>
-            <h1>David's Cookbook</h1>
+            <h1>G's Cookbook</h1>
             <p class="intro">Find something delicious to make. Search recipes by name, ingredient, or category.</p>
             <form class="search" method="get" action="recipes.php" role="search">
                 <label class="sr-only" for="recipe-search">Search recipes</label>
-                <input id="recipe-search" type="search" name="q" value="<?php echo e($q); ?>" placeholder="Try “pasta” or “vegetarian”">
+                <input id="recipe-search" type="search" name="searchbox" value="<?php echo e($search); ?>" placeholder="Try “pasta” or “vegetarian”">
                 <button type="submit">Find a recipe</button>
-                <?php if ($q !== ''): ?>
+                <?php if ($search !== ''): ?>
                     <a class="clear-search" href="recipes.php">Clear</a>
                 <?php endif; ?>
             </form>
@@ -77,7 +77,7 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
             <?php elseif (!$searched): ?>
                 <p class="empty-state">Your next favorite recipe is just a search away.</p>
             <?php elseif (!$recipes): ?>
-                <p class="empty-state">No recipes found<?php echo $q !== '' ? ' for "' . e($q) . '"' : ''; ?>. Try another search.</p>
+                <p class="empty-state">No recipes found<?php echo $search !== '' ? ' for "' . e($search) . '"' : ''; ?>. Try another search.</p>
             <?php else: ?>
                 <h2 class="results-heading">Recipes to try</h2>
                 <div class="recipe-grid">
