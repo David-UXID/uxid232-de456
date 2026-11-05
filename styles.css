@@ -187,6 +187,79 @@ h1 {
     color: var(--green);
 }
 
+.auth {
+    max-width: 440px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.auth-form label {
+    color: var(--blue-dark);
+    font-weight: 600;
+}
+
+.auth-form input {
+    min-height: 3rem;
+    margin-bottom: 0.6rem;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid #e1ebf0;
+    border-radius: 0.7rem;
+    color: var(--ink);
+    font: inherit;
+}
+
+.auth-form input:focus {
+    border-color: var(--green);
+    outline: 3px solid var(--green-light);
+}
+
+.auth-form button {
+    min-height: 3rem;
+    margin-top: 0.4rem;
+    border: 0;
+    border-radius: 0.7rem;
+    background: #103f68;
+    color: var(--white);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    transition: background 150ms ease, transform 150ms ease;
+}
+
+.auth-form button:hover {
+    background: #0c3151;
+    transform: translateY(-1px);
+}
+
+.notice.error {
+    margin-bottom: 1rem;
+    border-left-color: #c0392b;
+}
+
+.notice[role="status"] {
+    margin-bottom: 1rem;
+}
+
+.auth-switch {
+    color: var(--muted);
+}
+
+.auth-switch a,
+.user-bar a {
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.user-bar {
+    margin: 0 0 1rem;
+    text-align: right;
+    color: var(--muted);
+}
+
 .sr-only {
     position: absolute;
     width: 1px;
