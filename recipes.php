@@ -1,4 +1,5 @@
-﻿<?php
+<?php
+session_start();
 // Connect to the MySQL database created by schema.sql. MAMP default settings.
 $host = 'localhost';
 $user = 'root';
@@ -58,6 +59,13 @@ function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8')
 </head>
 <body>
     <main class="cookbook">
+        <p class="user-bar">
+            <?php if (isset($_SESSION['username'])): ?>
+                Signed in as <strong><?php echo e((string) $_SESSION['username']); ?></strong> &middot; <a href="logout.php">Log out</a>
+            <?php else: ?>
+                <a href="login.php">Log in</a> &middot; <a href="login.php?mode=register">Create account</a>
+            <?php endif; ?>
+        </p>
         <header class="hero">
             <p class="eyebrow">A little inspiration for your table</p>
             <h1>G's Cookbook</h1>
