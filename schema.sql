@@ -101,4 +101,54 @@ INSERT INTO recipes (
     'the welcome addition of quick-braised broccoli. A dusting of pecorino cheese completes each bowl with a touch of sharpness.',
     9,
     5
+),
+(
+    'bucatini-tomato-sauce',
+    'Bucatini & Tomato Sauce',
+    'with Roasted Broccoli',
+    (SELECT id FROM categories WHERE name = 'Vegetarian'),
+    2,
+    'Made with petite datterini tomatoes, the sauce for tonight''s bucatini highlights briny olives and capers, hot red pepper flakes, and savory Grana Padano cheese. We''re mixing in roasted broccoli for contrasting texture and nutty-sweet flavor.',
+    10,
+    5
+),
+(
+    'cheesy-enchiladas-rojas',
+    'Cheesy Enchiladas Rojas',
+    'with Mushrooms & Kale',
+    (SELECT id FROM categories WHERE name = 'Vegetarian'),
+    4,
+    'Our hearty vegetarian enchiladas are filled with a combination of fragrant, Mexican-spiced rice and sautéed mushrooms and kale. For even more flavor, we''re baking them under a smoky-sweet tomato sauce flavored with ancho chile paste and a layer of melty white cheddar. A dollop of lime-seasoned sour cream adds creamy, cooling balance. (You may receive green curly, dark green lacinato, or red kale.)',
+    13,
+    6
+),
+(
+    'crispy-fish-sandwiches',
+    'Crispy Fish Sandwiches',
+    'with Tartar Sauce & Roasted Sweet Potato Wedges',
+    (SELECT id FROM categories WHERE name = 'Seafood'),
+    4,
+    'These sandwiches highlight wild Alaskan pollock—flavored with aromatic seasonings, coated with panko breadcrumbs, and pan-fried for a golden-brown crust. In classic fashion, a tangy, mayo-based tartar sauce perfectly balances the fish.',
+    10,
+    6
+),
+(
+    'general-tsos-chicken',
+    'General Tso''s Chicken',
+    'with Bok Choy & Jasmine Rice',
+    (SELECT id FROM categories WHERE name = 'Chicken'),
+    2,
+    'In this quick-cooking spin on a takeout favorite, hoisin sauce, honey, sriracha, and sesame oil lend our chicken the sweet, spicy, and nutty flavors General Tso''s is known for. A light dusting of cornstarch on the chicken just before it hits the pan creates a delicately crispy exterior (and helps it soak up the irresistible sauce later).',
+    11,
+    5
+),
+(
+    'hoisin-glazed-pork-chops',
+    'Hoisin-Glazed Pork Chops',
+    'with Stir-Fried Vegetables & Wonton Noodles',
+    (SELECT id FROM categories WHERE name = 'Pork'),
+    4,
+    'Delightfully chewy wonton noodles tossed in a nutty, savory sauce are a delicious accompaniment to these pork chops. For depth of flavor, we''re pan-searing the pork chops, then glazing them with barbecue-like hoisin, whose sweetness perfectly matches bites of sautéed carrots in the noodles.',
+    11,
+    6
 );
