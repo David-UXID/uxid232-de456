@@ -1,43 +1,51 @@
 <?php
+// Initialize session to track user login state across pages
 session_start();
 
-// Same MAMP connection settings as recipes.php.
-$host = 'localhost';
-$user = 'root';
-$pass = 'root';
-$db   = 'recipe_db';
+// Load centralized database configuration
+require_once 'config.php';
 
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
-
+// If user is already logged in, redirect to recipes page
 if (isset($_SESSION['user_id'])) {
     header('Location: recipes.php');
     exit;
 }
 
+// Determine whether to show login or registration form (defaults to login)
 $mode = ($_POST['mode'] ?? $_GET['mode'] ?? 'login') === 'register' ? 'register' : 'login';
+// Initialize variables to display form values and status messages
 $username = '';
 $error = '';
 $success = '';
 
+// Process form submission (login or registration)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Retrieve and sanitize form inputs
     $username = trim((string) ($_POST['username'] ?? ''));
     $password = (string) ($_POST['password'] ?? '');
 
     try {
-        $conn = new mysqli($host, $user, $pass, $db);
+        // Establish database connection
+        $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
         $conn->set_charset('utf8mb4');
 
+        // REGISTRATION MODE: Create new user account
         if ($mode === 'register') {
             $confirm = (string) ($_POST['confirm'] ?? '');
+            
+            // Validate username format (3-50 alphanumeric characters or underscores)
             if (!preg_match('/^[A-Za-z0-9_]{3,50}$/', $username)) {
                 $error = 'Username must be 3-50 letters, numbers, or underscores.';
-            } elseif (strlen($password) < 8) {
+            }
+            // Validate password length (minimum 8 characters)
+            elseif (strlen($password) < 8) {
                 $error = 'Password must be at least 8 characters.';
-            } elseif ($password !== $confirm) {
+            }
+            // Verify password confirmation matches password
+            elseif ($password !== $confirm) {
                 $error = 'Passwords do not match.';
             } else {
+                // Check if username already exists in database
                 $stmt = $conn->prepare('SELECT id FROM users WHERE username = ?');
                 $stmt->bind_param('s', $username);
                 $stmt->execute();
@@ -47,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($exists) {
                     $error = 'That username is already taken.';
                 } else {
+                    // Hash password securely and insert new user into database
                     $hash = password_hash($password, PASSWORD_DEFAULT);
                     $stmt = $conn->prepare('INSERT INTO users (username, password_hash) VALUES (?, ?)');
                     $stmt->bind_param('ss', $username, $hash);
@@ -56,25 +65,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mode = 'login';
                 }
             }
-        } else {
+        } 
+        // LOGIN MODE: Verify user credentials
+        else {
+            // Look up user by username
             $stmt = $conn->prepare('SELECT id, username, password_hash FROM users WHERE username = ?');
             $stmt->bind_param('s', $username);
             $stmt->execute();
             $row = $stmt->get_result()->fetch_assoc();
             $stmt->close();
 
+            // Verify username exists and password matches
             if ($row && password_verify($password, $row['password_hash'])) {
+                // Create new session ID and store user information
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = (int) $row['id'];
                 $_SESSION['username'] = $row['username'];
                 $conn->close();
+                // Redirect to recipes page after successful login
                 header('Location: recipes.php');
                 exit;
             }
             $error = 'Incorrect username or password.';
         }
+        // Close database connection
         $conn->close();
     } catch (mysqli_sql_exception $e) {
+        // Handle any database errors gracefully without exposing technical details
         $error = 'Something went wrong. Please try again.';
     }
 }
