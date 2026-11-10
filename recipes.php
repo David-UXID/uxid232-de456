@@ -1,13 +1,7 @@
 <?php
 session_start();
-// Connect to the MySQL database created by schema.sql. MAMP default settings.
-$host = 'localhost';
-$user = 'root';
-$pass = 'root';
-$db   = 'recipe_db';
-
-// Ask MySQLi to report database problems as exceptions so they can be handled below. (Ai gave this to me)
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+// Load centralized database configuration
+require_once 'config.php';
 
 // Start with an empty recipe list and no error message in case the page cannot load data.
 $recipes = [];
@@ -21,7 +15,7 @@ try {
     if (!$searched) {
         throw new RuntimeException('skip');
     }
-    $conn = new mysqli($host, $user, $pass, $db);
+    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     $conn->set_charset('utf8mb4');
     // Use a prepared statement so the search text is never inserted into the SQL directly.
     $sql = 'SELECT recipes.id, recipes.title, recipes.subtitle, COALESCE(categories.name, \'\') AS category, recipes.servings, recipes.description, recipes.ingredient_count, recipes.step_count FROM recipes LEFT JOIN categories ON categories.id = recipes.category_id';
@@ -45,8 +39,7 @@ try {
     $error = 'Could not load recipes.';
 }
 
-// Escape text before displaying it in HTML to prevent recipe content from being treated as markup.
-function e(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); }
+// Start with an empty recipe list and no error message in case the page cannot load data.
 ?>
 <!DOCTYPE html>
 <html lang="en">
