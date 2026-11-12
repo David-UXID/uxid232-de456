@@ -143,6 +143,36 @@ h1 {
     box-shadow: 0 8px 24px rgb(25 50 71 / 5%);
 }
 
+.recipe-image {
+    display: block;
+    width: calc(100% + 2.8rem);
+    max-width: none;
+    aspect-ratio: 1 / 1;
+    margin: -1.4rem -1.4rem 1rem;
+    border-radius: 1rem 1rem 0 0;
+    object-fit: cover;
+}
+
+.ingredients {
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #e1ebf0;
+}
+
+.ingredients summary {
+    color: var(--blue-dark);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.ingredients ul {
+    margin: 0.6rem 0 0;
+    padding-left: 1.2rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+}
+
 .category {
     display: inline-block;
     margin: 0 0 0.6rem;

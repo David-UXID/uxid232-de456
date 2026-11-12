@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 // Load centralized database configuration
 require_once 'config.php';
@@ -15,15 +15,19 @@ try {
     if (!$searched) {
         throw new RuntimeException('skip');
     }
+    
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
     $conn->set_charset('utf8mb4');
     // Use a prepared statement so the search text is never inserted into the SQL directly.
-    $sql = 'SELECT recipes.id, recipes.title, recipes.subtitle, COALESCE(categories.name, \'\') AS category, recipes.servings, recipes.description, recipes.ingredient_count, recipes.step_count FROM recipes LEFT JOIN categories ON categories.id = recipes.category_id';
+    $sql = 'SELECT recipes.id, recipes.title, recipes.subtitle, COALESCE(categories.name, \'\') AS category, recipes.servings, recipes.description, recipes.image, recipes.ingredients, recipes.ingredient_count, recipes.step_count FROM recipes LEFT JOIN categories ON categories.id = recipes.category_id';
     if ($search !== '') {
         $sql .= ' WHERE recipes.title LIKE ? OR recipes.subtitle LIKE ? OR recipes.description LIKE ? OR categories.name LIKE ?';
     }
     $sql .= ' ORDER BY recipes.title';
     $stmt = $conn->prepare($sql);
+    if ($stmt === false) {
+        throw new Exception('Prepare failed: ' . $conn->error);
+    }
     if ($search !== '') {
         $like = '%' . addcslashes($search, '%_\\') . '%';
         $stmt->bind_param('ssss', $like, $like, $like, $like);
@@ -84,6 +88,9 @@ try {
                 <div class="recipe-grid">
                     <?php foreach ($recipes as $r): ?>
                         <article class="recipe-card">
+                            <?php if ($r['image'] !== ''): ?>
+                                <img class="recipe-image" src="<?php echo e($r['image']); ?>" alt="<?php echo e($r['title']); ?>" loading="lazy">
+                            <?php endif; ?>
                             <?php if ($r['category'] !== ''): ?>
                                 <p class="category"><?php echo e($r['category']); ?></p>
                             <?php endif; ?>
@@ -95,8 +102,21 @@ try {
                             <ul class="recipe-details" aria-label="Recipe details">
                                 <li><strong><?php echo (int) $r['servings']; ?></strong> servings</li>
                                 <li><strong><?php echo (int) $r['ingredient_count']; ?></strong> ingredients</li>
-                                <li><strong><?php echo (int) $r['step_count']; ?></strong> steps</li>
+                                <?php if ((int) $r['step_count'] > 0): ?>
+                                    <li><strong><?php echo (int) $r['step_count']; ?></strong> steps</li>
+                                <?php endif; ?>
                             </ul>
+                            <?php $ingredients = array_filter(array_map('trim', explode("\n", (string) $r['ingredients']))); ?>
+                            <?php if ($ingredients): ?>
+                                <details class="ingredients">
+                                    <summary>Ingredients</summary>
+                                    <ul>
+                                        <?php foreach ($ingredients as $item): ?>
+                                            <li><?php echo e($item); ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </details>
+                            <?php endif; ?>
                         </article>
                     <?php endforeach; ?>
                 </div>
