@@ -62,6 +62,7 @@ try {
             <?php else: ?>
                 <a href="login.php">Log in</a> &middot; <a href="login.php?mode=register">Create account</a>
             <?php endif; ?>
+            &middot; <a href="admin.php">Admin area</a>
         </p>
         <header class="hero">
             <p class="eyebrow">A little inspiration for your table</p>
