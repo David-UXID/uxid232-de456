@@ -300,6 +300,63 @@ h1 {
     clip-path: inset(50%);
 }
 
+.recipe-detail {
+    padding: 1.4rem;
+    border: 1px solid #e1ebf0;
+    border-radius: 1rem;
+    background: var(--white);
+    box-shadow: 0 8px 24px rgb(25 50 71 / 5%);
+}
+
+.recipe-detail h1 {
+    margin: 0;
+}
+
+.recipe-detail-image {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    margin: 1rem 0;
+    border-radius: 1rem;
+}
+
+.recipe-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e1ebf0;
+}
+
+.recipe-section h2 {
+    color: var(--blue-dark);
+}
+
+.ingredient-list {
+    padding-left: 1.2rem;
+    line-height: 1.6;
+}
+
+.step-list {
+    padding-left: 1.4rem;
+}
+
+.step {
+    margin-bottom: 1.5rem;
+}
+
+.step h3 {
+    margin: 0 0 0.5rem;
+    color: var(--blue-dark);
+    font-size: 1.1rem;
+}
+
+.step-image {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0.5rem 0 0.75rem;
+    border-radius: 0.75rem;
+}
+
 @media (max-width: 540px) {
     .cookbook {
         width: min(100% - 1.25rem, 1080px);
