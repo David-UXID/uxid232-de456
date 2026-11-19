@@ -148,7 +148,7 @@ try {
 <body>
     <main class="cookbook">
         <p class="user-bar">
-            Signed in as <strong><?php echo e((string) $_SESSION['username']); ?></strong> &middot; <a href="logout.php">Log out</a>
+            Signed in as <strong><?php echo e((string) $_SESSION['username']); ?></strong> &middot; <a href="recipes.php">Home</a> &middot; <a href="logout.php">Log out</a>
         </p>
         <header class="hero">
             <p class="eyebrow">Admin area</p>
