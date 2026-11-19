@@ -16,7 +16,10 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$fields = ['title', 'subtitle', 'category', 'servings', 'description', 'image', 'ingredients', 'steps'];
+$fields = ['title', 'subtitle', 'category', 'servings', 'description', 'ingredients', 'steps'];
+// Uploaded images are saved as images/<slug>.<ext>, which the recipe pages already load
+$allowedImageTypes = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/gif' => 'gif', 'image/webp' => 'webp'];
+$maxImageBytes = 5 * 1024 * 1024;
 $values = array_fill_keys($fields, '');
 $errors = [];
 $success = '';
@@ -52,8 +55,22 @@ try {
         if ($values['description'] === '' || mb_strlen($values['description']) > 1000) {
             $errors[] = 'Description is required and must be 1000 characters or fewer.';
         }
-        if (mb_strlen($values['image']) > 255) {
-            $errors[] = 'Image path must be 255 characters or fewer.';
+        // The image is optional; when one is uploaded it must be a small, real image file
+        $image = $_FILES['image'] ?? ['error' => UPLOAD_ERR_NO_FILE];
+        $imageExt = null;
+        if ($image['error'] !== UPLOAD_ERR_NO_FILE) {
+            if ($image['error'] !== UPLOAD_ERR_OK) {
+                $errors[] = 'The image could not be uploaded. Please try again.';
+            } elseif ($image['size'] > $maxImageBytes) {
+                $errors[] = 'Image must be 5 MB or smaller.';
+            } else {
+                // getimagesize() checks the file's actual content and works without the fileinfo extension
+                $info = @getimagesize($image['tmp_name']);
+                $imageExt = $info ? ($allowedImageTypes[$info['mime']] ?? null) : null;
+                if ($imageExt === null) {
+                    $errors[] = 'Image must be a JPEG, PNG, GIF, or WebP file.';
+                }
+            }
         }
         // Ingredients and steps are entered one per line; blank lines are ignored
         $ingredientLines = array_values(array_filter(array_map('trim', preg_split('/\R/', $values['ingredients']))));
@@ -68,6 +85,14 @@ try {
             $errors[] = 'Recipe name must include letters or numbers.';
         }
 
+        $imagePath = '';
+        if ($imageExt !== null) {
+            $imagePath = 'images/' . $slug . '.' . $imageExt;
+            if (file_exists(__DIR__ . '/' . $imagePath)) {
+                $errors[] = 'An image file already exists for that recipe name.';
+            }
+        }
+
         if (!$errors) {
             $stmt = $conn->prepare('SELECT id FROM recipes WHERE slug = ?');
             $stmt->bind_param('s', $slug);
@@ -77,7 +102,10 @@ try {
 
             if ($exists) {
                 $errors[] = 'A recipe with that name already exists.';
+            } elseif ($imageExt !== null && !move_uploaded_file($image['tmp_name'], __DIR__ . '/' . $imagePath)) {
+                $errors[] = 'The image could not be saved. Please try again.';
             } else {
+                $savedImage = $imageExt !== null ? __DIR__ . '/' . $imagePath : null;
                 $steps = [];
                 foreach ($stepLines as $i => $line) {
                     $steps[] = ['step' => $i + 1, 'title' => 'Step ' . ($i + 1), 'instruction' => $line];
@@ -89,9 +117,10 @@ try {
                 $stepCount = count($steps);
 
                 $stmt = $conn->prepare('INSERT INTO recipes (slug, title, subtitle, category_id, servings, description, image, ingredients, ingredient_count, step_count, steps) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-                $stmt->bind_param('sssiisssiis', $slug, $values['title'], $values['subtitle'], $categoryId, $servings, $values['description'], $values['image'], $ingredients, $ingredientCount, $stepCount, $stepsJson);
+                $stmt->bind_param('sssiisssiis', $slug, $values['title'], $values['subtitle'], $categoryId, $servings, $values['description'], $imagePath, $ingredients, $ingredientCount, $stepCount, $stepsJson);
                 $stmt->execute();
                 $stmt->close();
+                $savedImage = null;
 
                 $success = 'Recipe added.';
                 $values = array_fill_keys($fields, '');
@@ -99,7 +128,12 @@ try {
         }
     }
     $conn->close();
-} catch (mysqli_sql_exception $e) {
+} catch (Throwable $e) {
+    error_log($e);
+    // Remove an image saved for a recipe that was never inserted, so the next attempt isn't blocked
+    if (isset($savedImage) && is_file($savedImage)) {
+        unlink($savedImage);
+    }
     $errors[] = 'Something went wrong. Please try again.';
 }
 ?>
@@ -130,7 +164,7 @@ try {
             <?php elseif ($success !== ''): ?>
                 <p class="notice" role="status"><?php echo e($success); ?></p>
             <?php endif; ?>
-            <form class="auth-form recipe-card" method="post" action="admin.php">
+            <form class="auth-form recipe-card" method="post" action="admin.php" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="<?php echo e($_SESSION['csrf_token']); ?>">
                 <label for="title">Recipe name (required)</label>
                 <input id="title" type="text" name="title" value="<?php echo e($values['title']); ?>" maxlength="100" required>
@@ -147,8 +181,8 @@ try {
                 <input id="servings" type="number" name="servings" value="<?php echo e($values['servings']); ?>" min="1" max="65535" required>
                 <label for="description">Description (required, 1000 characters max)</label>
                 <textarea id="description" name="description" rows="4" maxlength="1000" required><?php echo e($values['description']); ?></textarea>
-                <label for="image">Image path or URL (optional)</label>
-                <input id="image" type="text" name="image" value="<?php echo e($values['image']); ?>" maxlength="255">
+                <label for="image">Image (optional, JPEG, PNG, GIF, or WebP, 5 MB max)</label>
+                <input id="image" type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp">
                 <label for="ingredients">Ingredients (required, one per line)</label>
                 <textarea id="ingredients" name="ingredients" rows="8" required><?php echo e($values['ingredients']); ?></textarea>
                 <label for="steps">Steps (optional, one per line)</label>
