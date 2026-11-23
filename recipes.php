@@ -1,4 +1,5 @@
-﻿<?php
+﻿
+<?php
 session_start();
 // Load centralized database configuration
 require_once 'config.php';

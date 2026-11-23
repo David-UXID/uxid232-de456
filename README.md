@@ -28,3 +28,6 @@ If the column already exists, run only the `UPDATE` to make existing accounts ad
 ## AI use
 
 ChatGPT was used for guidance on the user form. Gemini was used to help troubleshoot some code issues.
+
+claude helped write the log in page and troubleshoot issues 
+
